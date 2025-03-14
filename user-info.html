@@ -1,0 +1,634 @@
+<!-- user-info.html -->
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations de l'utilisateur - BioTerms</title>
+    <link rel="shortcut icon" type="x-icon" href="Logo.png">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/sharp-solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.8/css/sharp-light.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            color: #111;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 450px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-section {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-image-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile-image-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .profile-image-option:hover {
+            border-color: #111;
+            transform: scale(1.1);
+        }
+
+        .user-info-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            color: #111;
+        }
+
+        .user-name {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-name:hover {
+            background-color: #f5f5f5;
+        }
+
+        .edit-input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .account-management {
+            margin-top: 30px;
+        }
+
+        .management-button {
+            background-color: white;
+            color: #000;
+            border: 1px solid #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .management-button:hover {
+            background-color: #000;
+            color: white;
+        }
+
+        .password-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .password-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: white;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #000;
+            color: white;
+        }
+
+        #loadingIndicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #ffe6e6;
+            display: none;
+        }
+
+        .back-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+    transition: color 0.3s ease;
+}
+
+.back-icon:hover {
+    color: #555;
+}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div id="loadingIndicator">Chargement en cours...</div>
+        
+        <div id="userInfoContainer" style="display:none;">
+            <div class="profile-section">
+                <img id="profileImage" src="" alt="Photo de profil" class="profile-image">
+                
+                <div id="profileImageOptionsContainer" style="display:none;">
+                    <div class="profile-image-options">
+                        <img src="https://cloud.appwrite.io/v1/storage/buckets/673f0e8f0031d1df2e9b/files/67bb0b57003a1dd10466/view?project=66bdd9ef0022a854dccc&mode=admin" alt="Image 1" class="profile-image-option" data-id="67bb0b57003a1dd10466">
+                        <img src="https://cloud.appwrite.io/v1/storage/buckets/673f0e8f0031d1df2e9b/files/67bb0cfc003d931693ac/view?project=66bdd9ef0022a854dccc&mode=admin" alt="Image 2" class="profile-image-option" data-id="67bb0cfc003d931693ac">
+                        <img src="https://cloud.appwrite.io/v1/storage/buckets/673f0e8f0031d1df2e9b/files/67bb0d670031d65445d1/view?project=66bdd9ef0022a854dccc&mode=admin" alt="Image 3" class="profile-image-option" data-id="67bb0d670031d65445d1">
+                        <img src="https://cloud.appwrite.io/v1/storage/buckets/673f0e8f0031d1df2e9b/files/67bb0db5003377e39ac8/view?project=66bdd9ef0022a854dccc&mode=admin" alt="Image 4" class="profile-image-option" data-id="67bb0db5003377e39ac8">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-info-line">
+                <span id="userNameDisplay" class="user-name"></span>
+            </div>
+
+            <div id="editNameContainer" style="display:none;">
+                <input type="text" id="newNameInput" class="edit-input" placeholder="Nouveau nom" required>
+            </div>
+
+            <div class="user-info-line">
+                <span id="userEmail"></span>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" id="savedConceptsCount">0</div>
+                    <div class="stat-label">Concepts sauvegardés</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="openConceptsCount">0</div>
+                    <div class="stat-label">Concepts ouverts</div>
+                </div>
+            </div>
+
+            <div class="account-management">
+                <button id="changePasswordBtn" class="management-button">Changer le mot de passe</button>
+                <button id="deleteAccountBtn" class="management-button">Supprimer le compte</button>
+
+                <form id="changePasswordForm" class="password-form">
+                    <input type="password" id="currentPasswordInput" placeholder="Mot de passe actuel" required>
+                    <input type="password" id="newPasswordInput" placeholder="Nouveau mot de passe" required>
+                    <input type="password" id="confirmPasswordInput" placeholder="Confirmer le nouveau mot de passe" required>
+                    <button type="submit" class="management-button">Mettre à jour le mot de passe</button>
+                </form>
+            </div>
+             
+            <i class="fa-light fa-arrow-left back-icon" onclick="window.location.href='app.html'"></i>
+
+        </div>
+
+        
+
+        <div id="errorContainer" class="error-message"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0"></script>
+    <script>
+        const client = new Appwrite.Client();
+        client.setEndpoint('https://cloud.appwrite.io/v1')
+              .setProject('66bdd9ef0022a854dccc');
+
+        const account = new Appwrite.Account(client);
+        const storage = new Appwrite.Storage(client);
+        const databases = new Appwrite.Databases(client);
+
+        const BUCKET_ID = '673f0e8f0031d1df2e9b';
+        const USER_CONCEPTS_COLLECTION = '676dbc8e00107e180a0c';
+        const DATABASE_ID = '66bddcb3002ce9c16742';
+        const bookmarks_collection = '67607e0c0013805dde72'
+        
+
+        
+        async function loadUserInfo() {
+            try {
+                const user = await account.get();
+                
+                // Charger l'image de profil
+                let profileImageSrc = 'Logo.png';
+                if (user.prefs && user.prefs.profilePictureId) {
+                    try {
+                        profileImageSrc = await storage.getFileView(BUCKET_ID, user.prefs.profilePictureId);
+                    } catch (error) {
+                        console.error('Erreur lors du chargement de l\'image de profil:', error);
+                    }
+                }
+                document.getElementById('profileImage').src = profileImageSrc;
+                
+                // Définir les informations de l'utilisateur
+                document.getElementById('userNameDisplay').textContent = user.name || 'Non défini';
+                document.getElementById('userEmail').textContent = user.email;
+                
+                // Charger les compteurs de concepts
+                try {
+                    const savedConcepts = await databases.listDocuments(
+                        DATABASE_ID,
+                        bookmarks_collection,
+                        [Appwrite.Query.equal('userId', user.$id)]
+                    );
+                    
+                    const openConcepts = await databases.listDocuments(
+                        DATABASE_ID,
+                        USER_CONCEPTS_COLLECTION,
+                        [Appwrite.Query.equal('userId', user.$id)]
+                    );
+                    
+                    document.getElementById('savedConceptsCount').textContent = savedConcepts.total;
+                    document.getElementById('openConceptsCount').textContent = openConcepts.total;
+                } catch (error) {
+                    console.error('Erreur lors du chargement des concepts:', error);
+                }
+                
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('userInfoContainer').style.display = 'block';
+            } catch (error) {
+                handleError(error);
+            }
+        }
+
+        // Gestionnaire de clic sur l'image de profil
+        document.getElementById('profileImage').addEventListener('click', () => {
+            const optionsContainer = document.getElementById('profileImageOptionsContainer');
+            optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Sélection de l'image de profil
+        document.querySelectorAll('.profile-image-option').forEach(option => {
+            option.addEventListener('click', async () => {
+                try {
+                    const imageId = option.getAttribute('data-id');
+                    await account.updatePrefs({ profilePictureId: imageId });
+                    document.getElementById('profileImage').src = await storage.getFileView(BUCKET_ID, imageId);
+                    document.getElementById('profileImageOptionsContainer').style.display = 'none';
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+        });
+
+        // Gestionnaire de clic sur le nom d'utilisateur
+        document.getElementById('userNameDisplay').addEventListener('click', () => {
+            const editContainer = document.getElementById('editNameContainer');
+            const nameInput = document.getElementById('newNameInput');
+            nameInput.value = document.getElementById('userNameDisplay').textContent;
+            editContainer.style.display = 'block';
+        });
+
+        // Gestionnaire de saisie du nom
+        document.getElementById('newNameInput').addEventListener('keyup', async (e) => {
+            if (e.key === 'Enter') {
+                try {
+                    const updatedUser = await account.updateName(e.target.value);
+                    document.getElementById('userNameDisplay').textContent = updatedUser.name;
+                    document.getElementById('editNameContainer').style.display = 'none';
+                } catch (error) {
+                    handleError(error);
+                }
+            }
+        });
+
+        // Gestionnaire de changement de mot de passe
+        document.getElementById('changePasswordBtn').addEventListener('click', () => {
+            const form = document.getElementById('changePasswordForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPasswordInput').value;
+            const newPassword = document.getElementById('newPasswordInput').value;
+            const confirmPassword = document.getElementById('confirmPasswordInput').value;
+
+            if (newPassword !== confirmPassword) {
+                handleError(new Error('Les nouveaux mots de passe ne correspondent pas'));
+                return;
+            }
+
+            try {
+                await account.updatePassword(newPassword, currentPassword);
+                document.getElementById('changePasswordForm').style.display = 'none';
+                document.getElementById('changePasswordForm').reset();
+                alert('Mot de passe mis à jour avec succès');
+            } catch (error) {
+                handleError(error);
+            }
+        });
+
+        // Gestionnaire de suppression de compte
+        document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+            if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                const promptPassword = prompt('Entrez votre mot de passe actuel pour confirmer:');
+                if (promptPassword) {
+                    try {
+                        account.deleteSession('current')
+                            .then(() => {
+                                account.delete(promptPassword)
+                                    .then(() => {
+                                        window.location.href = 'login.html';
+                                    })
+                                    .catch(error => handleError(error));
+                            })
+                            .catch(error => handleError(error));
+                    } catch (error) {
+                        handleError(error);
+                    }
+                }
+            }
+        });
+
+        function handleError(error) {
+            console.error('Erreur:', error);
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = error.message || 'Une erreur s\'est produite';
+            errorContainer.style.display = 'block';
+            
+            // Masquer le message d'erreur après 5 secondes
+            setTimeout(() => {
+                errorContainer.style.display = 'none';
+            }, 5000);
+        }
+
+        // Vérifier l'état de connexion au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            account.get()
+                .then(response => {
+                    console.log('Utilisateur connecté:', response);
+                    loadUserInfo();
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification de la connexion:', error);
+                    window.location.href = 'login.html';
+                });
+        });
+
+        // Fermer les options d'image en cliquant à l'extérieur
+        document.addEventListener('click', (e) => {
+            const optionsContainer = document.getElementById('profileImageOptionsContainer');
+            const profileImage = document.getElementById('profileImage');
+            
+            if (!profileImage.contains(e.target) && !optionsContainer.contains(e.target)) {
+                optionsContainer.style.display = 'none';
+            }
+        });
+
+        // Fermer le champ de modification du nom en cliquant à l'extérieur
+        document.addEventListener('click', (e) => {
+            const editNameContainer = document.getElementById('editNameContainer');
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            
+            if (!editNameContainer.contains(e.target) && !userNameDisplay.contains(e.target)) {
+                editNameContainer.style.display = 'none';
+            }
+        });
+
+        // Valider les entrées dans le formulaire de changement de mot de passe
+        const passwordForm = document.getElementById('changePasswordForm');
+        const newPasswordInput = document.getElementById('newPasswordInput');
+        const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+
+        function validatePassword() {
+            if (newPasswordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity('Les mots de passe ne correspondent pas');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        }
+
+        newPasswordInput.addEventListener('change', validatePassword);
+        confirmPasswordInput.addEventListener('keyup', validatePassword);
+
+        // Mettre à jour le compteur de concepts ouverts
+        async function updateOpenConceptsCount(userId) {
+            try {
+                const response = await databases.listDocuments(
+                    DATABASE_ID,
+                    USER_CONCEPTS_COLLECTION,
+                    [Appwrite.Query.equal('userId', userId)]
+                );
+                document.getElementById('openConceptsCount').textContent = response.total;
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour du compteur de concepts ouverts:', error);
+            }
+        }
+
+        // Nettoyer les entrées
+        function sanitizeInput(input) {
+            return input.trim().replace(/[<>]/g, '');
+        }
+
+        // Mettre à jour le nom d'utilisateur avec validation des entrées
+        async function updateUsername(newName) {
+            const sanitizedName = sanitizeInput(newName);
+            if (sanitizedName.length < 1) {
+                handleError(new Error('Le nom ne peut pas être vide'));
+                return;
+            }
+            
+            try {
+                const updatedUser = await account.updateName(sanitizedName);
+                document.getElementById('userNameDisplay').textContent = updatedUser.name;
+                document.getElementById('editNameContainer').style.display = 'none';
+            } catch (error) {
+                handleError(error);
+            }
+        }
+
+        // Ajouter un écouteur d'événements pour le champ de mise à jour du nom
+        document.getElementById('newNameInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                updateUsername(e.target.value);
+            }
+        });
+
+        // Mettre à jour l'interface lors du changement de l'image de profil
+        async function updateProfileImage(imageId) {
+    try {
+        // تحديث تفضيلات المستخدم
+        await account.updatePrefs({ profilePictureId: imageId });
+        
+        // الحصول على رابط الصورة الجديدة
+        const newImageUrl = await storage.getFileView(BUCKET_ID, imageId);
+        
+        // تحديث صورة الملف الشخصي في صفحة user-info
+        document.getElementById('profileImage').src = newImageUrl;
+        
+        // إغلاق قائمة اختيار الصور
+        document.getElementById('profileImageOptionsContainer').style.display = 'none';
+
+        // تخزين معرف الصورة في التخزين المحلي
+        localStorage.setItem('userProfileImageId', imageId);
+        
+    
+        
+        // إعادة تحميل الصفحة الرئيسية إذا كانت مفتوحة
+        if (window.opener) {
+            window.opener.location.reload();
+        }
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+        // Ajouter des écouteurs d'événements pour les options d'image
+        document.querySelectorAll('.profile-image-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const imageId = option.getAttribute('data-id');
+                updateProfileImage(imageId);
+            });
+        });
+
+        // Fonction pour supprimer les concepts de l'utilisateur
+async function deleteUserConcepts(userId) {
+    try {
+        // Supprimer les concepts sauvegardés
+        const savedConcepts = await databases.listDocuments(
+            DATABASE_ID,
+            bookmarks_collection,
+            [Appwrite.Query.equal('userId', userId)]
+        );
+        
+        for (const concept of savedConcepts.documents) {
+            await databases.deleteDocument(DATABASE_ID, bookmarks_collection, concept.$id);
+        }
+        
+        // Supprimer les concepts ouverts
+        const openConcepts = await databases.listDocuments(
+            DATABASE_ID,
+            USER_CONCEPTS_COLLECTION,
+            [Appwrite.Query.equal('userId', userId)]
+        );
+        
+        for (const concept of openConcepts.documents) {
+            await databases.deleteDocument(DATABASE_ID, USER_CONCEPTS_COLLECTION, concept.$id);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la suppression des concepts:', error);
+        throw error;
+    }
+}
+
+// Gestionnaire de suppression de compte
+document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+    const confirmDelete = confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');
+    
+    if (confirmDelete) {
+        const password = prompt('Pour confirmer la suppression, veuillez entrer votre mot de passe :');
+        
+        if (password) {
+            try {
+                const user = await account.get();
+                
+                // 1. Supprimer d'abord les concepts de l'utilisateur
+                await deleteUserConcepts(user.$id);
+                
+                // 2. Supprimer la session actuelle
+                await account.deleteSession('current');
+                
+                // 3. Supprimer le compte
+                await account.delete(password);
+                
+                // 4. Rediriger vers la page de connexion
+                alert('Votre compte a été supprimé avec succès.');
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                let errorMessage = 'Une erreur est survenue lors de la suppression du compte.';
+                
+                if (error.code === 401) {
+                    errorMessage = 'Mot de passe incorrect.';
+                }
+                
+                handleError(new Error(errorMessage));
+            }
+        }
+    }
+});
+    </script>
+</body>
+</html>

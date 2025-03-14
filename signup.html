@@ -1,0 +1,470 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - BioTerms</title>
+    <link rel="shortcut icon" type="x-icon" href="Logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --background-color: #f8f8f8;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --hover-color: #f5f5f5;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .signup-container {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            width: 90%;
+            max-width: 420px;
+            transition: transform 0.3s ease;
+        }
+
+        .signup-container:hover {
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            margin: 0 auto 1.5rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .google-btn, .signup-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 12px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .google-btn i {
+            font-size: 1.2rem;
+        }
+
+        .google-btn:hover, .signup-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .google-btn:active, .signup-btn:active {
+            transform: translateY(1px);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .input-group .toggle-password:hover {
+            color: var(--primary-color);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 12px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            background-color: white;
+        }
+
+        .form-toggle {
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-top: 16px;
+            display: inline-block;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        #status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+            background-color: var(--hover-color);
+            display: none;
+        }
+
+        #status.error {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
+            display: block;
+        }
+
+        #status.success {
+            background-color: #f0fff4;
+            color: #38a169;
+            border: 1px solid #9ae6b4;
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .google-btn, .signup-btn {
+                padding: 10px 20px;
+            }
+        }
+
+        .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    transform: translateX(100%) translateY(0);
+    background-color: white;
+    padding: 16px 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+.toast.success {
+    border-right: 4px solid #2ecc71;
+}
+
+.toast.error {
+    border-right: 4px solid #e74c3c;
+}
+
+.toast.warning {
+    border-right: 4px solid #f39c12;
+}
+
+.toast.info {
+    border-right: 4px solid #3498db;
+}
+
+.toast i {
+    font-size: 20px;
+}
+
+.toast.success i {
+    color: #2ecc71;
+}
+
+.toast.error i {
+    color: #e74c3c;
+}
+
+.toast.warning i {
+    color: #f39c12;
+}
+
+.toast.info i {
+    color: #3498db;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+}
+    </style>  
+</head>
+<body>
+<div class="signup-container">
+    <h1>Inscription sur BioTerms</h1>
+    <img src="logo.png" alt="Logo BioTerms" class="logo">
+    
+    <button id="google-signup" class="google-btn">
+        <i class="fab fa-google"></i>
+        S'inscrire avec Google
+    </button>
+    
+    <div class="divider"><span>ou</span></div>
+    
+    <div id="signup-form">
+        <h2>Créer un compte</h2>
+        <form id="user-signup-form">
+            <div class="input-group">
+                <input type="text" id="signup-name" placeholder="Nom complet" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="signup-email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="signup-password" placeholder="Mot de passe" required>
+                <i class="toggle-password fa-light fa-eye" onclick="togglePassword('signup-password')"></i>
+            </div>
+            <button type="submit" class="signup-btn">S'inscrire</button>
+        </form>
+        <span class="form-toggle" onclick="window.location.href='login.html'">Déjà un compte ? Se connecter</span>
+    </div>
+    
+    <div id="status"></div>
+    <div id="toast" class="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+</div>
+
+<script>
+    // Configuration Appwrite
+    const client = new Appwrite.Client();
+    client
+        .setEndpoint('https://cloud.appwrite.io/v1')
+        .setProject('66bdd9ef0022a854dccc');
+    
+    const account = new Appwrite.Account(client);
+
+    // Basculer la visibilité du mot de passe
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.nextElementSibling;
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Inscription avec Google
+    document.getElementById('google-signup').addEventListener('click', async () => {
+    try {
+        // Créer une session OAuth2 avec Google
+        await account.createOAuth2Session('google', 
+            'http://localhost:5173/app.html', 
+            'http://localhost:5173/signup.html'
+        );
+        
+        // Après une connexion réussie, récupérer les informations de l'utilisateur
+        const user = await account.get();
+        
+        // Stocker l'identifiant de l'utilisateur dans le localStorage
+        localStorage.setItem('userId', user.$id);
+        
+        // Stocker le type de connexion
+        localStorage.setItem('authProvider', 'google');
+        
+        showToast("Connexion réussie via Google", 'success');
+        
+        // Rediriger directement vers la page de l'application car les comptes Google sont déjà vérifiés
+        window.location.href = 'app.html';
+    } catch (error) {
+        console.error('Erreur lors de la connexion via Google :', error);
+        showToast("Échec de la connexion via Google", 'error');
+    }
+});
+
+    // Inscription Email
+    document.getElementById('user-signup-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    try {
+        const userId = Appwrite.ID.unique();
+        await account.create(userId, email, password, name);
+        
+        // Stocker l'identifiant de l'utilisateur et le type d'inscription
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('authProvider', 'email');
+        
+        showToast('Compte créé avec succès', 'success');
+        
+        // Créer un lien de vérification par e-mail
+        await account.createVerification('http://localhost:5173/verify.html');
+        
+        // Rediriger vers la page de vérification
+        window.location.href = 'verify.html';
+    } catch (error) {
+        console.error("Échec de l'inscription :", error);
+        showToast(`Échec de l'inscription : ${error.message}`, 'error');
+    }
+});
+
+// Mise à jour de la vérification de l'état de connexion
+window.onload = async () => {
+    try {
+        const user = await account.get();
+        const authProvider = localStorage.getItem('authProvider');
+        
+        if (user) {
+            if (authProvider === 'google') {
+                // Les utilisateurs via Google sont directement redirigés vers l'application
+                window.location.href = 'app.html';
+            } else if (!user.emailVerification) {
+                // Les utilisateurs via e-mail doivent d'abord vérifier leur compte
+                window.location.href = 'verify.html';
+            } else {
+                window.location.href = 'app.html';
+            }
+        }
+    } catch (error) {
+        console.log("L'utilisateur n'est pas connecté");
+    }
+};
+
+    function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const icon = toast.querySelector('i');
+    
+    // Reset previous classes
+    toast.className = 'toast';
+    icon.className = 'fas';
+
+    const toastTypes = {
+        'success': { 
+            class: 'success', 
+            icon: 'fa-check-circle' 
+        },
+        'error': { 
+            class: 'error', 
+            icon: 'fa-exclamation-circle' 
+        },
+        'warning': { 
+            class: 'warning', 
+            icon: 'fa-exclamation-triangle' 
+        },
+        'info': { 
+            class: 'info', 
+            icon: 'fa-info-circle' 
+        }
+    };
+
+    const currentType = toastTypes[type] || toastTypes['info'];
+    
+    toast.classList.add(currentType.class);
+    icon.classList.add(currentType.icon);
+
+    toastMessage.textContent = message;
+    
+    void toast.offsetWidth;
+    
+    toast.classList.add('show');
+    
+    const hideTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+
+    toast.onclick = () => {
+        clearTimeout(hideTimeout);
+        toast.classList.remove('show');
+    };
+}
+</script>
+</body>
+</html>
