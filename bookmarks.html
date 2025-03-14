@@ -1,0 +1,158 @@
+<!-- bookmarks.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioTerms - Favoris</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" type="x-icon" href="Logo.png">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.4.2/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.4.2/uicons-thin-rounded/css/uicons-thin-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.4.2/uicons-regular-straight/css/uicons-regular-straight.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.4.2/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <link rel="stylesheet" data-purpose="Layout StyleSheet" title="Web Awesome" href="/css/app-wa-cc491567646eab1188c6538ebc462e7d.css?vsn=d">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/sharp-solid.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.8/css/sharp-light.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+</head>
+<style>
+    .notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    animation: slideUp 0.3s ease-out;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.undo-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.undo-button:hover {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+</style>
+<body>
+    <div id="app">
+        <!-- Mobile Layout -->
+        <div class="mobile-layout">
+            <header class="mobile-header">
+                <div class="logo">
+                    <img src="Logo Light Mode.png" alt="BioTerms Logo" class="logo-img light-mode-logo">
+                    <img src="Logo Dark Mode.png" alt="BioTerms Logo" class="logo-img dark-mode-logo" style="display: none;">
+                </div>
+                <h1 class="site-title">Mes Favoris</h1>
+                <div class="header-icons">
+                    <button class="back-button">
+                        <i class="fa-light fa-arrow-left"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="mobile-terms-container">
+                <ul id="mobileBookmarksList" class="term-list">
+                    <!-- Bookmarked terms will be added here -->
+                </ul>
+            </div>
+
+            <!-- Mobile concept modal -->
+            <div id="conceptModal" class="modal">
+                <div class="modal-content">
+                    <h2 id="modalTerm"></h2>
+                    <p id="modalDefinition"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="desktop-layout">
+            <div class="container">
+                <header>
+                    <div class="logo">
+                        <img src="Logo Light Mode.png" alt="BioTerms Logo" class="logo-img light-mode-logo">
+                        <img src="Logo Dark Mode.png" alt="BioTerms Logo" class="logo-img dark-mode-logo" style="display: none;">
+                    </div>
+                    <h1 class="site-title">Mes Favoris</h1>
+                    <div class="header-icons">
+                        <button class="back-button">
+                            <i class="fa-light fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </header>
+                <div class="main-content">
+                    <aside class="sidebar">
+                        <ul id="desktopBookmarksList" class="term-list">
+                            <!-- Bookmarked terms will be added here -->
+                        </ul>
+                    </aside>
+                    <main class="content">
+                        <!-- Selected term definition will be displayed here -->
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0"></script>
+    <script src="bookmarks.js" type="module"></script>
+    <script>
+        
+window.addEventListener('storage', async (event) => {
+    if (event.key === 'bookmarksUpdated') {
+        await loadBookmarks();
+    }
+});
+
+async function loadBookmarks() {
+    try {
+        const user = await account.get();
+        const response = await databases.listDocuments(
+            '66bddcb3002ce9c16742', // bookmarksDatabaseId
+            '67607e0c0013805dde72', // bookmarksCollectionId
+            [Query.equal('userId', user.$id)]
+        );
+        
+        bookmarkedTerms = response.documents;
+        displayBookmarks();
+    } catch (error) {
+        console.error('Failed to load bookmarks:', error);
+    }
+}
+    </script>
+</body>
+</html>
