@@ -4,11 +4,7 @@ const sdk = require('node-appwrite');
 const client = new sdk.Client();
 
 client
-<<<<<<< HEAD
-    .setEndpoint('https://appwrite.bioterms.space/v1') // Votre endpoint Appwrite
-=======
     .setEndpoint('https://cloud.appwrite.io/v1') // Votre endpoint Appwrite
->>>>>>> 5ddc969c330a34e947abc5bad4d75267c39b87d1
     .setProject('66bdd9ef0022a854dccc') // Votre ID de projet
     .setKey('standard_eefecb284392e59c94f534299f96f87dfb280caf1b62cf6fc9c2b64b6ef1b1ab489c30531e0213279f17d2c5b525058e53a25313635bb7169bb479c3bc63f248095c665e095ee264077fff9cf27b9693d3207a67e9ee48ac3d8560bdadd9bd59f45c103fc7669040cc7c70122d4be3eec5853a7278843edcf9d3ca2db97c3fb4'); // Votre clé API
 
